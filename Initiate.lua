@@ -1,3 +1,5 @@
+warn("INITIATE CUSTOM FUNCIONOU")
+
 -- INITIATE CUSTOM - FPS BOOST MOBILE
 
 pcall(function()
