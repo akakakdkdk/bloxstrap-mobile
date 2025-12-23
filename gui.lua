@@ -6,46 +6,18 @@ if game.CoreGui:FindFirstChild("BloxstrapMobileUI") then
     game.CoreGui.BloxstrapMobileUI:Destroy()
 end
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "BloxstrapMobileUI"
-ScreenGui.Parent = game.CoreGui
-ScreenGui.ResetOnSpawn = false
+-- Carregando WindUi
+local WindUi = loadstring(game:HttpGet("https://raw.githubusercontent.com/akakakdkdk/WindUi/main/init.lua", true))()
+local window = WindUi:CreateWindow({
+    Name = "Bloxstrap Mobile",
+    Size = UDim2.fromScale(0.35, 0.5),
+    Theme = "Dark"
+})
 
-local Frame = Instance.new("Frame")
-Frame.Size = UDim2.fromScale(0.45, 0.45)
-Frame.Position = UDim2.fromScale(0.05, 0.25)
-Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Frame.BorderSizePixel = 0
-Frame.Parent = ScreenGui
+-- FPS Label
+local fpsLabel = window:CreateLabel("FPS: 0", {TextColor = Color3.fromRGB(0,255,0)})
 
-local UIList = Instance.new("UIListLayout", Frame)
-UIList.Padding = UDim.new(0, 8)
-UIList.HorizontalAlignment = Enum.HorizontalAlignment.Center
-UIList.VerticalAlignment = Enum.VerticalAlignment.Top
-
--- Label de preset ativo
-local ActiveLabel = Instance.new("TextLabel")
-ActiveLabel.Size = UDim2.fromScale(1, 0)
-ActiveLabel.AutomaticSize = Enum.AutomaticSize.Y
-ActiveLabel.BackgroundTransparency = 1
-ActiveLabel.TextColor3 = Color3.fromRGB(0, 255, 255)
-ActiveLabel.Font = Enum.Font.Gotham
-ActiveLabel.TextSize = 14
-ActiveLabel.Text = "Preset ativo: Nenhum"
-ActiveLabel.Parent = Frame
-
--- FPS Counter
-local FPSLabel = Instance.new("TextLabel")
-FPSLabel.Size = UDim2.fromScale(1, 0)
-FPSLabel.AutomaticSize = Enum.AutomaticSize.Y
-FPSLabel.BackgroundTransparency = 1
-FPSLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
-FPSLabel.Font = Enum.Font.Gotham
-FPSLabel.TextSize = 14
-FPSLabel.Text = "FPS: 0"
-FPSLabel.Parent = Frame
-
--- Atualiza FPS a cada frame
+-- Atualiza FPS
 spawn(function()
     local RunService = game:GetService("RunService")
     local lastTime = tick()
@@ -54,59 +26,40 @@ spawn(function()
         local currentTime = tick()
         local fps = math.floor(1 / math.clamp(currentTime - lastTime, 0.001, 1))
         lastTime = currentTime
-        FPSLabel.Text = "FPS: " .. fps
+        fpsLabel:SetText("FPS: " .. fps)
     end
 end)
 
--- Função para criar botões
+-- Preset ativo
+local presetLabel = window:CreateLabel("Preset ativo: Nenhum", {TextColor = Color3.fromRGB(0,255,255)})
+
+-- Função para criar botões de preset
 local function makeButton(text, urlPreset)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.fromScale(1, 0)
-    btn.AutomaticSize = Enum.AutomaticSize.Y
-    btn.Text = text
-    btn.TextColor3 = Color3.new(1,1,1)
-    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 14
-    btn.BorderSizePixel = 0
-    btn.Parent = Frame
-
-    local corner = Instance.new("UICorner", btn)
-    corner.CornerRadius = UDim.new(0, 8)
-
-    btn.MouseButton1Click:Connect(function()
-        ActiveLabel.Text = "Preset ativo: " .. text
-        warn("Carregando preset:", text)
-        loadstring(game:HttpGet(urlPreset, true))()
-    end)
+    local btn = window:CreateButton({
+        Name = text,
+        Callback = function()
+            presetLabel:SetText("Preset ativo: " .. text)
+            warn("Carregando preset:", text)
+            loadstring(game:HttpGet(urlPreset, true))()
+        end
+    })
 end
 
 -- Botão Reset gráfico
-local ResetBtn = Instance.new("TextButton")
-ResetBtn.Size = UDim2.fromScale(1, 0)
-ResetBtn.AutomaticSize = Enum.AutomaticSize.Y
-ResetBtn.Text = "♻️ Reset gráfico"
-ResetBtn.TextColor3 = Color3.fromRGB(255,255,255)
-ResetBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-ResetBtn.Font = Enum.Font.Gotham
-ResetBtn.TextSize = 14
-ResetBtn.BorderSizePixel = 0
-ResetBtn.Parent = Frame
-
-local corner = Instance.new("UICorner", ResetBtn)
-corner.CornerRadius = UDim.new(0, 8)
-
-ResetBtn.MouseButton1Click:Connect(function()
-    local Lighting = game:GetService("Lighting")
-    Lighting.GlobalShadows = true
-    Lighting.Brightness = 1
-    Lighting.ExposureCompensation = 0
-    Lighting.EnvironmentDiffuseScale = 1
-    Lighting.EnvironmentSpecularScale = 1
-    Lighting.ShadowSoftness = 0.5
-    warn("[Preset] Gráfico resetado")
-    ActiveLabel.Text = "Preset ativo: Nenhum"
-end)
+window:CreateButton({
+    Name = "♻️ Reset gráfico",
+    Callback = function()
+        local Lighting = game:GetService("Lighting")
+        Lighting.GlobalShadows = true
+        Lighting.Brightness = 1
+        Lighting.ExposureCompensation = 0
+        Lighting.EnvironmentDiffuseScale = 1
+        Lighting.EnvironmentSpecularScale = 1
+        Lighting.ShadowSoftness = 0.5
+        warn("[Preset] Gráfico resetado")
+        presetLabel:SetText("Preset ativo: Nenhum")
+    end
+})
 
 -- Adiciona botões de presets
 makeButton("✨ Clean VFX", url .. "clean_vfx.lua")
