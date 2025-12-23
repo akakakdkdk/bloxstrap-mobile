@@ -1,4 +1,4 @@
--- Evita múltiplas GUIs
+-- Evita múltiplas instâncias da GUI
 if game.CoreGui:FindFirstChild("BloxstrapMobileUI") then
     game.CoreGui.BloxstrapMobileUI:Destroy()
 end
@@ -16,48 +16,37 @@ end
 -- Cria a janela principal
 local MainUI = WindUI:Window({
     Name = "Bloxstrap Mobile",
-    Size = UDim2.fromOffset(400, 250),
+    Size = UDim2.fromOffset(450, 300),
     Theme = "Dark"
 })
 
--- FPS Label
-local FPSLabel = MainUI:Label("FPS: 0")
+-- Tabs
+local TabPresets = MainUI:Tab("Presets")
+local TabConfig = MainUI:Tab("Configurações")
 
--- Atualiza FPS em tempo real
-spawn(function()
-    local RunService = game:GetService("RunService")
-    local lastTime = tick()
-    while true do
-        RunService.RenderStepped:Wait()
-        local currentTime = tick()
-        local fps = math.floor(1 / math.clamp(currentTime - lastTime, 0.001, 1))
-        lastTime = currentTime
-        FPSLabel:SetText("FPS: " .. fps)
-    end
-end)
-
--- Preset ativo
-local ActivePresetLabel = MainUI:Label("Preset ativo: Nenhum")
+-- ===== ABA PRESETS =====
+local ActivePresetLabel = TabPresets:Label("Preset ativo: Nenhum")
 
 -- Função para adicionar botão de preset
 local function AddPresetButton(name, url)
-    MainUI:Button(name, function()
+    TabPresets:Button(name, function()
         ActivePresetLabel:SetText("Preset ativo: " .. name)
         local success, err = pcall(function()
             loadstring(game:HttpGet(url, true))()
         end)
         if not success then
             warn("[Bloxstrap Mobile] Erro ao carregar preset:", err)
+            ActivePresetLabel:SetText("Preset ativo: Erro ao carregar")
         end
     end)
 end
 
--- Presets
+-- Lista de presets
 AddPresetButton("✨ Clean VFX", "https://raw.githubusercontent.com/akakakdkdk/bloxstrap-mobile/main/presets/clean_vfx.lua")
 AddPresetButton("🔥 Ultra Low FPS", "https://raw.githubusercontent.com/akakakdkdk/bloxstrap-mobile/main/presets/ultra_low.lua")
 
 -- Botão reset gráfico
-MainUI:Button("♻️ Reset gráfico", function()
+TabPresets:Button("♻️ Reset Gráfico", function()
     local Lighting = game:GetService("Lighting")
     Lighting.GlobalShadows = true
     Lighting.Brightness = 1
@@ -69,11 +58,24 @@ MainUI:Button("♻️ Reset gráfico", function()
     warn("[Bloxstrap Mobile] Gráfico resetado")
 end)
 
--- Tabs laterais (opcional)
-local Tab1 = MainUI:Tab("Presets")
-local Tab2 = MainUI:Tab("Configurações")
+-- ===== ABA CONFIGURAÇÕES =====
+local FPSLabel = TabConfig:Label("FPS: 0")
 
--- Mover elementos para tabs se quiser
--- Por exemplo, FPSLabel e ActivePresetLabel em Configurações:
-Tab2:Label("FPS: 0") -- você pode mover o FPSLabel aqui se desejar
-Tab2:Label("Preset ativo: Nenhum")
+-- Atualiza FPS em tempo real
+task.spawn(function()
+    local RunService = game:GetService("RunService")
+    local lastTime = tick()
+    
+    while task.wait(0.5) do -- Atualiza a cada 0.5s para economizar recursos
+        local currentTime = tick()
+        local delta = currentTime - lastTime
+        local fps = math.floor(1 / math.clamp(delta, 0.001, 1))
+        lastTime = currentTime
+        
+        FPSLabel:SetText("FPS: " .. fps)
+    end
+end)
+
+-- Informações adicionais
+TabConfig:Label("Versão: 1.0")
+TabConfig:Label("Desenvolvido para Mobile"
