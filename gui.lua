@@ -1,15 +1,27 @@
--- Carrega a WindUI
-local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+-- Evita múltiplas GUIs
+if game.CoreGui:FindFirstChild("BloxstrapMobileUI") then
+    game.CoreGui.BloxstrapMobileUI:Destroy()
+end
+
+-- Carrega WindUI
+local success, WindUI = pcall(function()
+    return loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+end)
+
+if not success then
+    warn("[Bloxstrap Mobile] Não foi possível carregar WindUI")
+    return
+end
 
 -- Cria a janela principal
-local MainUI = WindUI:CreateWindow({
+local MainUI = WindUI:Window({
     Name = "Bloxstrap Mobile",
     Size = UDim2.fromOffset(400, 250),
     Theme = "Dark"
 })
 
 -- FPS Label
-local FPSLabel = MainUI:AddLabel("FPS: 0")
+local FPSLabel = MainUI:Label("FPS: 0")
 
 -- Atualiza FPS em tempo real
 spawn(function()
@@ -25,14 +37,18 @@ spawn(function()
 end)
 
 -- Preset ativo
-local ActivePresetLabel = MainUI:AddLabel("Preset ativo: Nenhum")
+local ActivePresetLabel = MainUI:Label("Preset ativo: Nenhum")
 
--- Função para adicionar botões de presets
-local function AddPresetButton(name, urlPreset)
-    MainUI:AddButton(name, function()
+-- Função para adicionar botão de preset
+local function AddPresetButton(name, url)
+    MainUI:Button(name, function()
         ActivePresetLabel:SetText("Preset ativo: " .. name)
-        warn("Carregando preset:", name)
-        loadstring(game:HttpGet(urlPreset, true))()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet(url, true))()
+        end)
+        if not success then
+            warn("[Bloxstrap Mobile] Erro ao carregar preset:", err)
+        end
     end)
 end
 
@@ -41,7 +57,7 @@ AddPresetButton("✨ Clean VFX", "https://raw.githubusercontent.com/akakakdkdk/b
 AddPresetButton("🔥 Ultra Low FPS", "https://raw.githubusercontent.com/akakakdkdk/bloxstrap-mobile/main/presets/ultra_low.lua")
 
 -- Botão reset gráfico
-MainUI:AddButton("♻️ Reset gráfico", function()
+MainUI:Button("♻️ Reset gráfico", function()
     local Lighting = game:GetService("Lighting")
     Lighting.GlobalShadows = true
     Lighting.Brightness = 1
@@ -50,5 +66,5 @@ MainUI:AddButton("♻️ Reset gráfico", function()
     Lighting.EnvironmentSpecularScale = 1
     Lighting.ShadowSoftness = 0.5
     ActivePresetLabel:SetText("Preset ativo: Nenhum")
-    warn("[Preset] Gráfico resetado")
+    warn("[Bloxstrap Mobile] Gráfico resetado")
 end)
