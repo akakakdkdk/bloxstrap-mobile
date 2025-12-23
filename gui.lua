@@ -1,65 +1,49 @@
-warn("[Bloxstrap] GUI via gethui iniciando")
+local url = "https://raw.githubusercontent.com/akakakdkdk/bloxstrap-mobile/main/presets/"
 
-local hui = gethui and gethui() or game:GetService("CoreGui")
+-- Proteção para não duplicar GUI
+if game.CoreGui:FindFirstChild("BloxstrapMobileUI") then
+    game.CoreGui.BloxstrapMobileUI:Destroy()
+end
 
--- remove GUI antiga
-pcall(function()
-    hui:FindFirstChild("BloxstrapMobile"):Destroy()
-end)
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "BloxstrapMobileUI"
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ResetOnSpawn = false
 
-local gui = Instance.new("ScreenGui")
-gui.Name = "BloxstrapMobile"
-gui.IgnoreGuiInset = true
-gui.Parent = hui
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.fromScale(0.45, 0.4)
+Frame.Position = UDim2.fromScale(0.05, 0.3)
+Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Frame.BorderSizePixel = 0
+Frame.Parent = ScreenGui
 
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.fromScale(0.75, 0.6)
-frame.Position = UDim2.fromScale(0.125, 0.2)
-frame.BackgroundColor3 = Color3.fromRGB(14,14,14)
-frame.Active = true
-frame.Draggable = true
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
+local UIList = Instance.new("UIListLayout", Frame)
+UIList.Padding = UDim.new(0, 8)
+UIList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIList.VerticalAlignment = Enum.VerticalAlignment.Top
 
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1,0,0,45)
-title.BackgroundTransparency = 1
-title.Text = "Bloxstrap Mobile"
-title.TextColor3 = Color3.new(1,1,1)
-title.Font = Enum.Font.GothamBold
-title.TextSize = 18
+-- Função para criar botões
+local function makeButton(text, urlPreset)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.fromScale(1, 0)
+    btn.AutomaticSize = Enum.AutomaticSize.Y
+    btn.Text = text
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 14
+    btn.BorderSizePixel = 0
+    btn.Parent = Frame
 
-local function button(text, y, url)
-    local b = Instance.new("TextButton", frame)
-    b.Size = UDim2.new(0.9,0,0,45)
-    b.Position = UDim2.new(0.05,0,0,y)
-    b.Text = text
-    b.BackgroundColor3 = Color3.fromRGB(32,32,32)
-    b.TextColor3 = Color3.new(1,1,1)
-    b.Font = Enum.Font.Gotham
-    b.TextSize = 15
-    Instance.new("UICorner", b)
+    local corner = Instance.new("UICorner", btn)
+    corner.CornerRadius = UDim.new(0, 8)
 
-    b.MouseButton1Click:Connect(function()
-        if url ~= "" then
-            loadstring(game:HttpGet(url, true))()
-        else
-            gui:Destroy()
-        end
+    btn.MouseButton1Click:Connect(function()
+        warn("Carregando preset:", text)
+        loadstring(game:HttpGet(urlPreset, true))()
     end)
 end
 
-button("🔥 Ultra Low FPS", 60,
-"https://raw.githubusercontent.com/akakakdkdk/bloxstrap-mobile/main/presets/ultra_low.lua")
-
-button("✨ Clean VFX", 115,
-"https://raw.githubusercontent.com/akakakdkdk/bloxstrap-mobile/main/presets/clean_vfx.lua")
-
-button("🥋 JJS Preset", 170,
-"https://raw.githubusercontent.com/akakakdkdk/bloxstrap-mobile/main/presets/jjs.lua")
-
-button("📊 FPS Counter", 225,
-"https://raw.githubusercontent.com/akakakdkdk/bloxstrap-mobile/main/utils/fps_counter.lua")
-
-button("❌ Fechar", 280, "")
-
-warn("[Bloxstrap] GUI FINAL carregada")
+-- ORDEM DOS BOTÕES (GUI) ↓↓↓
+makeButton("✨ Clean VFX", url .. "1-clean_vfx.lua")
+makeButton("🔥 Ultra Low FPS", url .. "2-ultra_low.lua")
