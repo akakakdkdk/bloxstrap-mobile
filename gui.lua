@@ -1,7 +1,7 @@
 -- Carrega a WindUI
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
--- Cria a interface
+-- Cria a janela principal
 local MainUI = WindUI:CreateWindow({
     Name = "Bloxstrap Mobile",
     Size = UDim2.fromOffset(400, 250),
@@ -27,7 +27,7 @@ end)
 -- Preset ativo
 local ActivePresetLabel = MainUI:AddLabel("Preset ativo: Nenhum")
 
--- Função auxiliar para criar botão de preset
+-- Função para adicionar botões de presets
 local function AddPresetButton(name, urlPreset)
     MainUI:AddButton(name, function()
         ActivePresetLabel:SetText("Preset ativo: " .. name)
