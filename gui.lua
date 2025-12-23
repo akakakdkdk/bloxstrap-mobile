@@ -1,6 +1,6 @@
 local url = "https://raw.githubusercontent.com/akakakdkdk/bloxstrap-mobile/main/presets/"
 
--- Proteção para não duplicar GUI
+-- Evitar duplicar GUI
 if game.CoreGui:FindFirstChild("BloxstrapMobileUI") then
     game.CoreGui.BloxstrapMobileUI:Destroy()
 end
@@ -44,6 +44,6 @@ local function makeButton(text, urlPreset)
     end)
 end
 
--- ORDEM DOS BOTÕES (GUI) ↓↓↓
-makeButton("✨ Clean VFX", url .. "1-clean_vfx.lua")
-makeButton("🔥 Ultra Low FPS", url .. "2-ultra_low.lua")
+-- ORDEM DOS BOTÕES NA GUI
+makeButton("✨ Clean VFX", url .. "clean_vfx.lua")
+makeButton("🔥 Ultra Low FPS", url .. "ultra_low.lua")
