@@ -4,23 +4,34 @@ if game.CoreGui:FindFirstChild("BloxstrapMobileUI") then
 end
 
 -- Carrega Fluent UI
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local success, Fluent = pcall(function()
+    return loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+end)
 
--- Cria a janela principal
+if not success or not Fluent then
+    warn("[Bloxstrap Mobile] Não foi possível carregar Fluent UI")
+    return
+end
+
+-- Cria a janela principal (compacta e centralizada)
 local Window = Fluent:CreateWindow({
-    Title = "Bloxstrap Mobile " .. "v1.0",
+    Title = "Bloxstrap Mobile v1.0",
     SubTitle = "Otimização Gráfica",
-    TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
+    TabWidth = 140,
+    Size = UDim2.fromOffset(400, 300),
+    Position = UDim2.fromScale(0.5, 0.5) - UDim2.fromOffset(200, 150),
     Acrylic = true,
     Theme = "Darker",
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 
--- ===== TAB PRESETS =====
+Window.MainFrame.Name = "BloxstrapMobileUI" -- garante nome único
+
+-- ===== TABS =====
 local Tabs = {
     Presets = Window:AddTab({ Title = "🎨 Presets", Icon = "sparkles" }),
-    Config = Window:AddTab({ Title = "⚙️ Configurações", Icon = "settings" })
+    Config = Window:AddTab({ Title = "⚙️ Configurações", Icon = "settings" }),
+    VFX = Window:AddTab({ Title = "💨 VFX", Icon = "particle" }) -- nova aba
 }
 
 local activePreset = "Nenhum"
@@ -39,35 +50,35 @@ local function AddPresetButton(name, emoji, url, description)
         Callback = function()
             activePreset = name
             PresetLabel:SetDesc("Preset ativo: " .. name)
-            
-            Fluent:Notify({
-                Title = "Carregando...",
-                Content = "Aplicando " .. name,
-                Duration = 2
-            })
-            
-            task.wait(0.5)
-            
-            local success, err = pcall(function()
-                loadstring(game:HttpGet(url, true))()
-            end)
-            
-            if not success then
-                warn("[Bloxstrap Mobile] Erro:", err)
-                PresetLabel:SetDesc("Preset ativo: Erro ao carregar")
-                Fluent:Notify({
-                    Title = "❌ Erro",
-                    Content = "Falha ao carregar " .. name,
-                    Duration = 3
-                })
-            else
-                Fluent:Notify({
-                    Title = "✅ Sucesso",
-                    Content = name .. " aplicado com sucesso!",
-                    Duration = 3
-                })
-            end
-        end
+
+            Fluent:Notify({  
+                Title = "Carregando...",  
+                Content = "Aplicando " .. name,  
+                Duration = 2  
+            })  
+
+            task.wait(0.5)  
+
+            local success, err = pcall(function()  
+                loadstring(game:HttpGet(url, true))()  
+            end)  
+
+            if not success then  
+                warn("[Bloxstrap Mobile] Erro:", err)  
+                PresetLabel:SetDesc("Preset ativo: Erro ao carregar")  
+                Fluent:Notify({  
+                    Title = "❌ Erro",  
+                    Content = "Falha ao carregar " .. name,  
+                    Duration = 3  
+                })  
+            else  
+                Fluent:Notify({  
+                    Title = "✅ Sucesso",  
+                    Content = name .. " aplicado com sucesso!",  
+                    Duration = 3  
+                })  
+            end  
+        end  
     })
 end
 
@@ -104,15 +115,15 @@ Tabs.Presets:AddButton({
         Lighting.EnvironmentDiffuseScale = 1
         Lighting.EnvironmentSpecularScale = 1
         Lighting.ShadowSoftness = 0.5
-        
-        activePreset = "Nenhum"
-        PresetLabel:SetDesc("Preset ativo: Nenhum")
-        
-        Fluent:Notify({
-            Title = "♻️ Reset Completo",
-            Content = "Gráfico restaurado para o padrão",
-            Duration = 2
-        })
+
+        activePreset = "Nenhum"  
+        PresetLabel:SetDesc("Preset ativo: Nenhum")  
+
+        Fluent:Notify({  
+            Title = "♻️ Reset Completo",  
+            Content = "Gráfico restaurado para o padrão",  
+            Duration = 2  
+        })  
     end
 })
 
@@ -131,31 +142,28 @@ task.spawn(function()
     local lastTime = tick()
     local frameCount = 0
     local fpsHistory = {}
-    
-    RunService.RenderStepped:Connect(function()
-        frameCount = frameCount + 1
-        local currentTime = tick()
-        
-        if currentTime - lastTime >= 1 then
-            local fps = frameCount
-            frameCount = 0
-            lastTime = currentTime
-            
-            -- Adiciona ao histórico
-            table.insert(fpsHistory, fps)
-            if #fpsHistory > 5 then
-                table.remove(fpsHistory, 1)
-            end
-            
-            -- Calcula média
-            local sum = 0
-            for _, v in ipairs(fpsHistory) do
-                sum = sum + v
-            end
-            local avgFPS = math.floor(sum / #fpsHistory)
-            
-            -- Atualiza label
-            pcall(function()
+
+    RunService.RenderStepped:Connect(function()  
+        frameCount = frameCount + 1  
+        local currentTime = tick()  
+
+        if currentTime - lastTime >= 1 then  
+            local fps = frameCount  
+            frameCount = 0  
+            lastTime = currentTime  
+
+            table.insert(fpsHistory, fps)  
+            if #fpsHistory > 5 then  
+                table.remove(fpsHistory, 1)  
+            end  
+
+            local sum = 0  
+            for _, v in ipairs(fpsHistory) do  
+                sum = sum + v  
+            end  
+            local avgFPS = math.floor(sum / #fpsHistory)  
+
+            pcall(function()  
                 FPSParagraph:SetDesc(string.format("FPS Atual: %d | Média: %d", fps, avgFPS))
             end)
         end
