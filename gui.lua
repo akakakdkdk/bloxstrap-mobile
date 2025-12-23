@@ -8,7 +8,7 @@ local success, WindUI = pcall(function()
     return loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 end)
 
-if not success then
+if not success or not WindUI then
     warn("[Bloxstrap Mobile] Não foi possível carregar WindUI")
     return
 end
@@ -68,3 +68,12 @@ MainUI:Button("♻️ Reset gráfico", function()
     ActivePresetLabel:SetText("Preset ativo: Nenhum")
     warn("[Bloxstrap Mobile] Gráfico resetado")
 end)
+
+-- Tabs laterais (opcional)
+local Tab1 = MainUI:Tab("Presets")
+local Tab2 = MainUI:Tab("Configurações")
+
+-- Mover elementos para tabs se quiser
+-- Por exemplo, FPSLabel e ActivePresetLabel em Configurações:
+Tab2:Label("FPS: 0") -- você pode mover o FPSLabel aqui se desejar
+Tab2:Label("Preset ativo: Nenhum")
