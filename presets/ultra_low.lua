@@ -1,4 +1,3 @@
--- Ultra Low FPS: baixa iluminação, sombras simples e efeitos mínimos
 local Lighting = game:GetService("Lighting")
 Lighting.Technology = Enum.Technology.Compatibility
 Lighting.GlobalShadows = false
@@ -8,7 +7,6 @@ Lighting.EnvironmentDiffuseScale = 0
 Lighting.EnvironmentSpecularScale = 0
 Lighting.ShadowSoftness = 0
 
--- Remove PostEffects
 for _, v in pairs(Lighting:GetChildren()) do
     if v:IsA("PostEffect") or v:IsA("Atmosphere") then
         v:Destroy()
