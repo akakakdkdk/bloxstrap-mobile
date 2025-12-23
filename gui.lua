@@ -31,7 +31,7 @@ Window.MainFrame.Name = "BloxstrapMobileUI" -- garante nome único
 local Tabs = {
     Presets = Window:AddTab({ Title = "🎨 Presets", Icon = "sparkles" }),
     Config = Window:AddTab({ Title = "⚙️ Configurações", Icon = "settings" }),
-    VFX = Window:AddTab({ Title = "💨 VFX", Icon = "particle" }) -- nova aba
+    VFX = Window:AddTab({ Title = "💨 VFX", Icon = "sparkles" }) -- Aba funcional
 }
 
 local activePreset = "Nenhum"
@@ -198,6 +198,53 @@ Tabs.Config:AddButton({
     Description = "Fecha a UI completamente",
     Callback = function()
         Fluent:Destroy()
+    end
+})
+
+-- ===== TAB VFX =====
+Tabs.VFX:AddSection("VFX de exemplo")
+
+-- Exemplo de VFX leves
+Tabs.VFX:AddButton({
+    Title = "💧 Água Azul",
+    Description = "Aplica partículas azuis leves",
+    Callback = function()
+        local p = Instance.new("ParticleEmitter")
+        p.Color = ColorSequence.new(Color3.fromRGB(0, 150, 255))
+        p.LightEmission = 0.5
+        p.Size = NumberSequence.new(1)
+        p.Rate = 10
+        p.Lifetime = NumberRange.new(1,2)
+        p.Speed = NumberRange.new(2,4)
+        p.Parent = workspace.Terrain
+        Fluent:Notify({ Title = "💨 VFX", Content = "Água Azul aplicada!", Duration = 2 })
+    end
+})
+
+Tabs.VFX:AddButton({
+    Title = "🔥 Chama Pequena",
+    Description = "Aplica efeito de fogo leve",
+    Callback = function()
+        local f = Instance.new("Fire")
+        f.Heat = 5
+        f.Size = 2
+        f.Parent = workspace.Terrain
+        Fluent:Notify({ Title = "💨 VFX", Content = "Chama Pequena aplicada!", Duration = 2 })
+    end
+})
+
+Tabs.VFX:AddButton({
+    Title = "✨ Faíscas",
+    Description = "Aplica partículas pequenas",
+    Callback = function()
+        local s = Instance.new("ParticleEmitter")
+        s.Color = ColorSequence.new(Color3.fromRGB(255,255,0))
+        s.Size = NumberSequence.new(0.5)
+        s.Rate = 15
+        s.Lifetime = NumberRange.new(0.5,1)
+        s.Speed = NumberRange.new(1,2)
+        s.Parent = workspace.Terrain
+        Fluent:Notify({ Title = "💨 VFX", Content = "Faíscas aplicadas!", Duration = 2 })
     end
 })
 
