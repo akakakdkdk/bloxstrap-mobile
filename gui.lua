@@ -6,7 +6,7 @@ if game.CoreGui:FindFirstChild("BloxstrapMobileUI") then
     game.CoreGui.BloxstrapMobileUI:Destroy()
 end
 
--- Cria ScreenGui
+-- ScreenGui
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "BloxstrapMobileUI"
 ScreenGui.Parent = game.CoreGui
@@ -14,9 +14,9 @@ ScreenGui.ResetOnSpawn = false
 
 -- Painel principal
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.fromOffset(350, 400)
-Frame.Position = UDim2.fromScale(0.05, 0.2)
-Frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Frame.Size = UDim2.fromOffset(400, 250)
+Frame.Position = UDim2.new(0.5, -200, 0.5, -125) -- centralizado
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Frame.BorderSizePixel = 0
 Frame.Parent = ScreenGui
 
@@ -28,7 +28,6 @@ local TopBar = Instance.new("Frame")
 TopBar.Size = UDim2.new(1, 0, 0, 30)
 TopBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 TopBar.Parent = Frame
-
 local TopCorner = Instance.new("UICorner", TopBar)
 TopCorner.CornerRadius = UDim.new(0, 12)
 
@@ -55,7 +54,6 @@ MinBtn.Font = Enum.Font.Gotham
 MinBtn.TextSize = 16
 MinBtn.BorderSizePixel = 0
 MinBtn.Parent = TopBar
-
 local MinCorner = Instance.new("UICorner", MinBtn)
 MinCorner.CornerRadius = UDim.new(0, 6)
 
@@ -70,7 +68,6 @@ CloseBtn.Font = Enum.Font.Gotham
 CloseBtn.TextSize = 16
 CloseBtn.BorderSizePixel = 0
 CloseBtn.Parent = TopBar
-
 local CloseCorner = Instance.new("UICorner", CloseBtn)
 CloseCorner.CornerRadius = UDim.new(0, 6)
 
@@ -81,7 +78,23 @@ Content.Position = UDim2.new(0, 0, 0, 30)
 Content.BackgroundTransparency = 1
 Content.Parent = Frame
 
-local UIList = Instance.new("UIListLayout", Content)
+-- Lateral de tabs
+local TabFrame = Instance.new("Frame")
+TabFrame.Size = UDim2.new(0, 100, 1, 0)
+TabFrame.Position = UDim2.new(0, 0, 0, 0)
+TabFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
+TabFrame.Parent = Content
+local TabCorner = Instance.new("UICorner", TabFrame)
+TabCorner.CornerRadius = UDim.new(0, 8)
+
+-- Frame de conteúdo das tabs
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(1, -100, 1, 0)
+MainFrame.Position = UDim2.new(0, 100, 0, 0)
+MainFrame.BackgroundTransparency = 1
+MainFrame.Parent = Content
+
+local UIList = Instance.new("UIListLayout", MainFrame)
 UIList.Padding = UDim.new(0, 8)
 UIList.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIList.VerticalAlignment = Enum.VerticalAlignment.Top
@@ -95,7 +108,7 @@ FPSLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
 FPSLabel.Font = Enum.Font.Gotham
 FPSLabel.TextSize = 14
 FPSLabel.Text = "FPS: 0"
-FPSLabel.Parent = Content
+FPSLabel.Parent = MainFrame
 
 spawn(function()
     local RunService = game:GetService("RunService")
@@ -109,7 +122,7 @@ spawn(function()
     end
 end)
 
--- Preset Label
+-- Preset ativo
 local ActiveLabel = Instance.new("TextLabel")
 ActiveLabel.Size = UDim2.fromScale(1, 0)
 ActiveLabel.AutomaticSize = Enum.AutomaticSize.Y
@@ -118,7 +131,7 @@ ActiveLabel.TextColor3 = Color3.fromRGB(0, 255, 255)
 ActiveLabel.Font = Enum.Font.Gotham
 ActiveLabel.TextSize = 14
 ActiveLabel.Text = "Preset ativo: Nenhum"
-ActiveLabel.Parent = Content
+ActiveLabel.Parent = MainFrame
 
 -- Função criar botão
 local function makeButton(text, urlPreset)
@@ -131,7 +144,7 @@ local function makeButton(text, urlPreset)
     btn.Font = Enum.Font.Gotham
     btn.TextSize = 14
     btn.BorderSizePixel = 0
-    btn.Parent = Content
+    btn.Parent = MainFrame
 
     local corner = Instance.new("UICorner", btn)
     corner.CornerRadius = UDim.new(0, 8)
@@ -153,7 +166,7 @@ ResetBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
 ResetBtn.Font = Enum.Font.Gotham
 ResetBtn.TextSize = 14
 ResetBtn.BorderSizePixel = 0
-ResetBtn.Parent = Content
+ResetBtn.Parent = MainFrame
 
 local corner = Instance.new("UICorner", ResetBtn)
 corner.CornerRadius = UDim.new(0, 8)
@@ -180,9 +193,9 @@ MinBtn.MouseButton1Click:Connect(function()
     minimized = not minimized
     Content.Visible = not minimized
     if minimized then
-        Frame.Size = UDim2.new(0, 350, 0, 30)
+        Frame.Size = UDim2.new(0, 400, 0, 30)
     else
-        Frame.Size = UDim2.new(0, 350, 0, 400)
+        Frame.Size = UDim2.new(0, 400, 0, 250)
     end
 end)
 
